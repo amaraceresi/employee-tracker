@@ -41,11 +41,16 @@ function promptMainMenu() {
       if(res.prompt === "View All Roles") {
         viewRoles()
       }
-
-
+      if(res.prompt === "Add Role") {
+        addRole()
+      }
       if(res.prompt === "View All Departments") {
         viewDepartments()
       }
+      if(res.prompt === "Add Department") {
+        addDepartment()
+      }
+    
     });
 }
 
@@ -101,8 +106,26 @@ const viewRoles = () => {
   })
 }
 
-
-
+const addRole = () => {
+inquirer.prompt([
+  {
+type: "input",
+name: "title",
+message: "What is this roles title?"
+  }, 
+  {
+type: "input",
+name: "salary",
+message: "What is this roles salary?"
+  }
+]).then((res) => {
+  connection.query('INSERT INTO role SET ?', {
+    title: res.title,
+    salary: res.salary
+  })
+  console.log("This role was added to the role table.")
+})
+}
 
 const viewDepartments = () => {
   connection.query("SELECT * FROM department", function(err,res) {
@@ -111,3 +134,19 @@ const viewDepartments = () => {
     promptMainMenu()
   })
 }
+
+const addDepartment = () => {
+  inquirer.prompt([
+    {
+  type: "input",
+  name: "department_name",
+  message: "What is this department's name?"
+    }, 
+    
+  ]).then((res) => {
+    connection.query('INSERT INTO department SET ?', {
+      department_name: res.department_name,
+    })
+    console.log("This department was added to the department table.")
+  })
+  }
