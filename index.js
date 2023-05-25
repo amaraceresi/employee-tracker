@@ -142,6 +142,10 @@ const addRole = () => {
   };
   
   const addEmployee = () => {
+    connection.query('SELECT * FROM role', (err, roles) => {
+      if (err) throw err;
+      connection.query('SELECT * FROM employee', (err, employees) => {
+        if (err) throw err;
     inquirer
       .prompt([
         {
@@ -158,32 +162,34 @@ const addRole = () => {
           type: "list",
           name: "role_id",
           message: "What is their role?",
-          choices: res.map(({ id, title }) => ({
+          choices: roles.map(({ id, title }) => ({
             value: id,
-            name: title
+            name: title,
           }))
         },
         {
           type: "list",
           name: "manager_id",
           message: "Who is their manager?",
-          choices: employeeData.map(({ id, first_name, last_name }) => ({
+          choices: employees.map(({ id, first_name, last_name }) => ({
             value: id,
-            name: `${first_name} ${last_name}`
+            name: `${first_name} ${last_name}`,
           }))
         },
       ])
-      .then((res) => {        
+      .then((answers) => {        
         connection.query("INSERT INTO employee SET ?", {
-          first_name: res.first_name,
-          last_name: res.last_name
-          role_id: res.role_id,
-          manager_id: res.manager_id,
+          first_name: answers.first_name,
+          last_name: answers.last_name,
+          role_id: answers.role_id,
+          manager_id: answers.manager_id,
         }, (err, res) => {
           if (err) throw err;        
           console.log("This employee was added to the employee table.");
-        promptMainMenu();
+          promptMainMenu();
+        });
       });
+    });
   });
 };
   
