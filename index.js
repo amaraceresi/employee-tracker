@@ -176,17 +176,17 @@ const addRole = () => {
       .then((res) => {        
         connection.query("INSERT INTO employee SET ?", {
           first_name: res.first_name,
-          last_name: res.last_name,
-          title: res.title,
-          salary: res.salary,
+          last_name: res.last_name
+          role_id: res.role_id,
           manager_id: res.manager_id,
-        });
-        console.log("This employee was added to the employee table.");
+        }, (err, res) => {
+          if (err) throw err;        
+          console.log("This employee was added to the employee table.");
         promptMainMenu();
       });
-  };
+  });
+};
   
-
 const updateRole = () => {
   const employeeSql = `SELECT * FROM employee`;
   connection.query(employeeSql, (err, data) => {
